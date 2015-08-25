@@ -1,0 +1,105 @@
+<?php
+namespace App\Controller;
+
+use App\Controller\AppController;
+
+/**
+ * UserRecord Controller
+ *
+ * @property \App\Model\Table\UserRecordTable $UserRecord
+ */
+class UserRecordController extends AppController
+{
+
+    /**
+     * Index method
+     *
+     * @return void
+     */
+    public function index()
+    {
+        $this->set('userRecord', $this->paginate($this->UserRecord));
+        $this->set('_serialize', ['userRecord']);
+    }
+
+    /**
+     * View method
+     *
+     * @param string|null $id User Record id.
+     * @return void
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function view($id = null)
+    {
+        $userRecord = $this->UserRecord->get($id, [
+            'contain' => []
+        ]);
+        $this->set('userRecord', $userRecord);
+        $this->set('_serialize', ['userRecord']);
+    }
+
+    /**
+     * Add method
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    public function add()
+    {
+        $userRecord = $this->UserRecord->newEntity();
+        if ($this->request->is('post')) {
+            $userRecord = $this->UserRecord->patchEntity($userRecord, $this->request->data);
+            if ($this->UserRecord->save($userRecord)) {
+                $this->Flash->success(__('The user record has been saved.'));
+                return $this->redirect(['action' => 'index']);
+            } else {
+                $this->Flash->error(__('The user record could not be saved. Please, try again.'));
+            }
+        }
+        $this->set(compact('userRecord'));
+        $this->set('_serialize', ['userRecord']);
+    }
+
+    /**
+     * Edit method
+     *
+     * @param string|null $id User Record id.
+     * @return void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function edit($id = null)
+    {
+        $userRecord = $this->UserRecord->get($id, [
+            'contain' => []
+        ]);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $userRecord = $this->UserRecord->patchEntity($userRecord, $this->request->data);
+            if ($this->UserRecord->save($userRecord)) {
+                $this->Flash->success(__('The user record has been saved.'));
+                return $this->redirect(['action' => 'index']);
+            } else {
+                $this->Flash->error(__('The user record could not be saved. Please, try again.'));
+            }
+        }
+        $this->set(compact('userRecord'));
+        $this->set('_serialize', ['userRecord']);
+    }
+
+    /**
+     * Delete method
+     *
+     * @param string|null $id User Record id.
+     * @return void Redirects to index.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function delete($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $userRecord = $this->UserRecord->get($id);
+        if ($this->UserRecord->delete($userRecord)) {
+            $this->Flash->success(__('The user record has been deleted.'));
+        } else {
+            $this->Flash->error(__('The user record could not be deleted. Please, try again.'));
+        }
+        return $this->redirect(['action' => 'index']);
+    }
+}
